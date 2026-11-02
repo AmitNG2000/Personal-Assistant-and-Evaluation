@@ -1,6 +1,6 @@
 # Personal Assistant and Evaluation
 
-This project contains a multi-agent personal assistant built with AutoGen's Magentic-One group chat and an evaluation system for assessing its results. The assistant coordinates specialist agents to answer questions about a local workspace, manage tasks and calendar events, draft emails, and save summaries.
+This project contains a multi-agent **personal assistant built with AutoGen's Magentic-One** group chat and an evaluation system including **llm-as-a-judge and deterministic check**. The assistant coordinates specialist agents to answer questions about a local workspace, manage tasks and calendar events, draft emails, and save summaries.
 
 **This repository cannot be run as provided.** It is limited to the author's work; confidential files and supporting components from the original project are intentionally omitted. These include the workspace data, task definitions, MCP servers, shared tools, configuration, and original modules required at runtime. The execution instructions in the documentation assume access to the complete private environment.
 
