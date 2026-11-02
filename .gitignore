@@ -1,0 +1,49 @@
+# Local credentials (keep the blank configuration template)
+.env
+.env.*
+!.env.example
+
+# Python environments and caches
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# AI
+.agents
+.codex
+
+# Generated assistant outputs and isolated test sessions
+outputs/
+tmp_workspaces/
+traces/
+my_trace_exports/
+
+# MLflow tracking data and SQLite sidecar files
+mlruns/
+mlartifacts/
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+mlflow/
+
+# Build artifacts and local editor / OS files
+build/
+dist/
+*.egg-info/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.log
+
+# Old Files
+old/
