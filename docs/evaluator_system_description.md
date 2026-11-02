@@ -2,7 +2,7 @@
 
 ## Overview
 
-This evaluation system runs the [personal assistant](../../../main.py) on the scenarios defined in [`user_tasks.json`](../../../user_tasks.json) and evaluates the results using two components:
+This evaluation system runs the [personal assistant](../src/autogen_personal_assistant/main.py) on the scenarios defined in `user_tasks.json` (confidential; omitted) and evaluates the results using two components:
 
 1. **Deterministic checks** verify that the final answer contains the expected information, the required tool calls were made, and the expected workspace and output-document changes occurred.
 2. **LLM-as-a-Judge Evaluator agent** performs a read-only review of the completed workspace and changed documents to verify that the user's requested outcome was fulfilled and supported by evidence.
@@ -16,24 +16,28 @@ reports, plus trace exports, to support investigation of failures.
 ## Setup and Execution
 
 Ensure the project dependencies are installed and the root `.env` contains the Azure
-OpenAI configuration used by the assistant.  
+OpenAI configuration used by the assistant. Confidential dependencies are intentionally
+omitted here. In the private environment, the repository root must also contain
+`workspace/`, `user_tasks.json`, the MCP servers and summary tools, and the original
+`main.py` (providing `build_mcp_config`) and `llm.py` used by the judge.
+
 From the repository root, run:
 
 ```bash
-python3 tasks/task_2_agentic_system_design_and_evaluation/evaluation/evaluate_assistant.py
+python3 src/evaluation_agent/run_evaluate_assistant.py
 ```
 
 Useful options:
 
 ```bash
 # Print the original assistant subprocess output as it is evaluated.
-python3 tasks/task_2_agentic_system_design_and_evaluation/evaluation/evaluate_assistant.py --verbose
+python3 src/evaluation_agent/run_evaluate_assistant.py --verbose
 
 # Allow up to five minutes for each original task and its review.
-python3 tasks/task_2_agentic_system_design_and_evaluation/evaluation/evaluate_assistant.py --timeout 300
+python3 src/evaluation_agent/run_evaluate_assistant.py --timeout 300
 
 # Use another compatible task definition and write reports elsewhere.
-python3 tasks/task_2_agentic_system_design_and_evaluation/evaluation/evaluate_assistant.py \
+python3 src/evaluation_agent/run_evaluate_assistant.py \
   --tasks-file path/to/tasks.json --output-dir path/to/report-directory
 ```
 
@@ -42,13 +46,13 @@ python3 tasks/task_2_agentic_system_design_and_evaluation/evaluation/evaluate_as
 
 | Component | Type | File name | Responsibility |
 | --- | --- | --- | --- |
-| Evaluation runner | Code | `evaluate_assistant.py` | Load tasks, run them sequentially, collect evidence, invoke the evaluator agent, and write reports. |
-| Original assistant | Application | `main.py` | Process each task in a fresh session workspace and produce an answer, workspace changes, and MLflow traces. |
+| Evaluation runner | Code | `src/evaluation_agent/run_evaluate_assistant.py` | Load tasks, run them sequentially, collect evidence, invoke the evaluator agent, and write reports. |
+| Personal assistant | Application | `src/autogen_personal_assistant/main.py` | Process each task in a fresh session workspace and produce an answer, workspace changes, and MLflow traces. |
 | Deterministic checks | Code | `evaluate_assistant.py` | Check expected answer text, tool calls and arguments, and workspace mutations against the task definition. |
 | Evaluator agent | AI Agent | `evaluate_assistant.py` | Independently assess task fulfilment and whether the final answer is supported by workspace evidence. |
 | Workspace-read<br/>MCP server | MCP server | `workspace_server.py` | Give the evaluator agent read-only access to the completed task's session workspace. |
 | Task definitions | Data | `user_tasks.json` | Define evaluation queries and the expected answers, tool calls, and workspace mutations. |
-| Reports and traces | Artifacts | `evaluation/` | Store the Markdown and CSV reports and task-specific MLflow trace exports. |
+| Reports and traces | Artifacts | `results/` | Store the Markdown and CSV reports and task-specific MLflow trace exports. |
 
 ## Architecture
 
@@ -94,10 +98,10 @@ assistant's recorded tool calls.
 
 ### Deterministic checks
 
-`evaluation/evaluate_assistant.py` contains the `Evaluator` class. For every task it:
+`src/evaluation_agent/evaluate_assistant.py` contains the `Evaluator` class. For every task it:
 
 1. Captures a before snapshot of the baseline `workspace/` and shared `outputs/`.
-2. Runs `main.py --query ...` in a subprocess. The assistant itself creates a fresh
+2. Runs `src/autogen_personal_assistant/main.py --query ...` in a subprocess. The assistant itself creates a fresh
    session workspace, so a task cannot modify the baseline workspace used by another
    task.
 3. Enables MLflow only for that original-assistant subprocess and parses `TOOL` spans
@@ -255,13 +259,14 @@ requested action.
 
 ### Outputs
 
-By default, all evaluation artifacts are written in this `evaluation/` directory:
+By default, evaluation artifacts are written in the repository-level `results/` directory:
 
 | Path | Contents |
 | --- | --- |
-| `user_tasks_results.md` | PASS/FAIL overview followed by a detailed human-readable table for every task. The overview includes a relative link to that task's isolated `tmp_workspaces/session_*` workspace. |
+| `user_tasks_results.md` | PASS/FAIL overview followed by a detailed human-readable table for every task. New private runs include relative links to `tmp_workspaces/session_*`; the shared report labels those confidential workspaces as omitted. |
 | `user_tasks_results.csv` | One analysis-friendly row per task, including expected and actual evidence and the absolute session-workspace path. |
-| `mlflow/task_<id>_*/task_<id>_*.json` | MLflow trace JSON exported from the original assistant only. Multiple files may exist for one task because MLflow traces the LangGraph run, individual graph nodes, model calls, and tool-agent calls separately. |
+| `mlflow/task_<id>_*/*.json` | One exported AutoGen assistant trace per task; evaluator-agent calls are kept separate. |
+| `run_logs.json` | Full results and judge evidence written by the AutoGen evaluation runner. |
 
 
 ## References

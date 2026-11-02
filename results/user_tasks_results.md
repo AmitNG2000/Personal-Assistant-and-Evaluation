@@ -14,16 +14,16 @@ Overall passes when all expected-field checks pass and the AI review is not FAIL
 
 | Task | Answer | Tool calls | Mutations | AI review | Overall | Codex review | Manual review | Workspace |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 01 | PASS | FAIL | FAIL | FAIL | FAIL | **PASS** — Email e011 from Mei Lin explicitly asks to include the data export feature; contact c007 and note006 also support the answer. | **PASS** | [Open workspace](../../../tmp_workspaces/session_73mdjpwz/) |
-| 02 | PASS | PASS | PASS | PASS | PASS | **PASS** — It returned Owen Murray's correct email address. | **PASS** | [Open workspace](../../../tmp_workspaces/session_aqk632sv/) |
-| 03 | PASS | PASS | PASS | PASS | PASS | **PASS** — It moved the client call to 16:00–17:00 as requested. | **PASS** | [Open workspace](../../../tmp_workspaces/session_c5npdyqs/) |
+| 01 | PASS | FAIL | FAIL | FAIL | FAIL | **PASS** — Email e011 from Mei Lin explicitly asks to include the data export feature; contact c007 and note006 also support the answer. | **PASS** | `session_73mdjpwz` (confidential; omitted) |
+| 02 | PASS | PASS | PASS | PASS | PASS | **PASS** — It returned Owen Murray's correct email address. | **PASS** | `session_aqk632sv` (confidential; omitted) |
+| 03 | PASS | PASS | PASS | PASS | PASS | **PASS** — It moved the client call to 16:00–17:00 as requested. | **PASS** | `session_c5npdyqs` (confidential; omitted) |
 | 04 | FAIL | FAIL | FAIL | UNKNOWN | FAIL | **FAIL** — The run timed out without marking the self-review task as done. | **FAIL** | — |
-| 05 | PASS | PASS | PASS | PASS | PASS | **PASS** — It read the task file, identified the weekly priorities, and saved the requested summary. | **PASS** | [Open workspace](../../../tmp_workspaces/session__caba7lg/) |
-| 06 | PASS | PASS | PASS | PASS | PASS | **PASS** — It correctly connected the promo-code silent failure to the payment-service architecture note. | **PASS** | [Open workspace](../../../tmp_workspaces/session_r0w0zr_y/) |
-| 07 | PASS | PASS | FAIL | PASS | FAIL | **PASS** — It created the requested 30-minute event for October 22 at 10:00 with Priya. | **PASS** | [Open workspace](../../../tmp_workspaces/session_zkkrv83t/) |
-| 08 | FAIL | FAIL | PASS | UNKNOWN | FAIL | **FAIL** — It updated the bug task, but timed out before retrieving related emails or returning the requested status report. | **FAIL** | [Open workspace](../../../tmp_workspaces/session_kfkk6_92/) |
-| 09 | PASS | PASS | PASS | PASS | PASS | **PASS** — It correctly listed the currently overdue tasks. | **PASS** | [Open workspace](../../../tmp_workspaces/session_3em98ms8/) |
-| 10 | PASS | FAIL | FAIL | PASS | FAIL | **PASS** — It created the requested forwarding task with an October 15 due date. | **PASS** | [Open workspace](../../../tmp_workspaces/session_9i4xz23l/) |
+| 05 | PASS | PASS | PASS | PASS | PASS | **PASS** — It read the task file, identified the weekly priorities, and saved the requested summary. | **PASS** | `session__caba7lg` (confidential; omitted) |
+| 06 | PASS | PASS | PASS | PASS | PASS | **PASS** — It correctly connected the promo-code silent failure to the payment-service architecture note. | **PASS** | `session_r0w0zr_y` (confidential; omitted) |
+| 07 | PASS | PASS | FAIL | PASS | FAIL | **PASS** — It created the requested 30-minute event for October 22 at 10:00 with Priya. | **PASS** | `session_zkkrv83t` (confidential; omitted) |
+| 08 | FAIL | FAIL | PASS | UNKNOWN | FAIL | **FAIL** — It updated the bug task, but timed out before retrieving related emails or returning the requested status report. | **FAIL** | `session_kfkk6_92` (confidential; omitted) |
+| 09 | PASS | PASS | PASS | PASS | PASS | **PASS** — It correctly listed the currently overdue tasks. | **PASS** | `session_3em98ms8` (confidential; omitted) |
+| 10 | PASS | FAIL | FAIL | PASS | FAIL | **PASS** — It created the requested forwarding task with an October 15 due date. | **PASS** | `session_9i4xz23l` (confidential; omitted) |
 
 ## Detailed results
 

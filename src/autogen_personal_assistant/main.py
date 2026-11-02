@@ -17,18 +17,20 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
+if str(REPO_ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT / "src"))
 
 from autogen_agentchat.base import TaskResult
 from autogen_agentchat.messages import TextMessage
 from autogen_agentchat.teams import MagenticOneGroupChat
 from dotenv import load_dotenv
 
-from tasks.task_3_agentic_system_implementation.team import (
+from autogen_personal_assistant.team import (
     create_model_client,
     create_team,
     load_existing_tools,
 )
-from tasks.task_3_agentic_system_implementation.tracing import TaskTrace, TraceRecorder
+from autogen_personal_assistant.tracing import TaskTrace, TraceRecorder
 
 
 def configure_runtime_warnings() -> None:
@@ -127,8 +129,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--session", action="store_true", help="Start an interactive session.")
     parser.add_argument("--verbose", action="store_true")
     parser.add_argument("--mlflow", action="store_true")
-    parser.add_argument("--trace_dir", type=Path, default=Path("tasks/task_3/traces"))
-    parser.add_argument("--mlflow_db", type=Path, default=Path("tasks/task_3/mlflow.db"))
+    parser.add_argument("--trace_dir", type=Path, default=Path("traces"))
+    parser.add_argument("--mlflow_db", type=Path, default=Path("mlflow.db"))
     parser.add_argument("--exp_name", default="pa_magentic_one")
     parser.add_argument("--tracking_uri", default="")
     parser.add_argument("--timeout", type=float, default=300, help="Seconds allowed per request.")

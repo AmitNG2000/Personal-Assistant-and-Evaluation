@@ -12,11 +12,13 @@ import sys
 import tempfile
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
+if str(REPO_ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from evaluate_assistant import (
+from evaluation_agent.evaluate_assistant import (
     CHECKS,
     Evaluator,
     Evaluator_Agent,
@@ -69,7 +71,7 @@ class AutoGenEvaluator(Evaluator):
             traces = Path(tempfile.mkdtemp(prefix=f"task_{self.task['id']}_", dir=trace_root))
             self.result["trace_directory"] = str(traces)
             command = [
-                sys.executable, str(REPO_ROOT / "tasks/task_3_agentic_system_implementation/main.py"),
+                sys.executable, str(REPO_ROOT / "src/autogen_personal_assistant/main.py"),
                 "--query", self.task["query"], "--mlflow", "--trace_dir", str(traces),
                 "--mlflow_db", str(self.output_dir / "mlflow.db"),
                 "--timeout", str(self.timeout),
@@ -136,7 +138,7 @@ def main() -> int:
     """
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--tasks-file", type=Path, default=REPO_ROOT / "user_tasks.json")
-    parser.add_argument("--output-dir", type=Path, default=Path(__file__).resolve().parent)
+    parser.add_argument("--output-dir", type=Path, default=REPO_ROOT / "results")
     parser.add_argument("--timeout", type=int, default=300)
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()
@@ -154,7 +156,7 @@ def main() -> int:
         result = AutoGenEvaluator(task, date, output, args.timeout, args.verbose).run()
         results.append(result)
         write_reports(results, output)
-        (output / "results.json").write_text(json.dumps(results, indent=2, ensure_ascii=False), encoding="utf-8")
+        (output / "run_logs.json").write_text(json.dumps(results, indent=2, ensure_ascii=False), encoding="utf-8")
         print(f"Task {task['id']}: {'PASS' if result['overall_pass'] else 'FAIL'}", flush=True)
     print(f"Reports: {output / 'user_tasks_results.md'} and user_tasks_results.csv")
     return 0 if all(item["overall_pass"] and item.get("trace_count") == 1 for item in results) else 1

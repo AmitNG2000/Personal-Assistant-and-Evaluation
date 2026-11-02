@@ -1,7 +1,7 @@
 """Run examples, check expectations, and review results with a read-only AI agent.
 
-Run: python tasks/task_2_agentic_system_design_and_evaluation/evaluation/evaluate_assistant.py
-Reports are saved beside this script. Each task and its AI review has a timeout.
+Run: python src/evaluation_agent/evaluate_assistant.py
+Reports are saved under results/. Each task and its AI review has a timeout.
 """
 
 from __future__ import annotations
@@ -20,8 +20,8 @@ from pathlib import Path
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-REPO_ROOT = SCRIPT_DIR.parent.parent.parent
-MLFLOW_DIR = SCRIPT_DIR / "mlflow"
+REPO_ROOT = SCRIPT_DIR.parent.parent
+MLFLOW_DIR = REPO_ROOT / "results" / "mlflow"
 CHECKS = ("answer_pass", "tool_calls_pass", "workspace_mutations_pass", "agent_pass")
 
 
@@ -51,7 +51,8 @@ class Evaluator:
                 MLFLOW_DIR.mkdir(parents=True, exist_ok=True)
                 traces = Path(tempfile.mkdtemp(prefix=f"task_{self.task['id']}_", dir=MLFLOW_DIR))
                 command = [
-                    sys.executable, "main.py", "--query", self.task["query"], "--mlflow",
+                    sys.executable, str(REPO_ROOT / "src/autogen_personal_assistant/main.py"),
+                    "--query", self.task["query"], "--mlflow",
                     "--trace_dir", str(traces), "--mlflow_db", str(Path(directory) / "mlflow.db"),
                 ]
                 process = subprocess.run(command, cwd=REPO_ROOT, capture_output=True,
@@ -454,8 +455,8 @@ def write_reports(results: list[dict], directory: Path) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--tasks-file", type=Path, default=REPO_ROOT / "user_tasks.json")
-    parser.add_argument("--output-dir", type=Path, default=SCRIPT_DIR,
-                        help="Directory for result reports (default: this evaluation directory).")
+    parser.add_argument("--output-dir", type=Path, default=REPO_ROOT / "results",
+                        help="Directory for result reports (default: results/).")
     parser.add_argument("--timeout", type=int, default=180, help="Timeout for each task and AI review.")
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()

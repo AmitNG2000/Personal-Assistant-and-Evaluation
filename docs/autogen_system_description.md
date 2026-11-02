@@ -5,7 +5,7 @@
 This implementation uses AutoGen `MagenticOneGroupChat` to coordinate three specialist
 AI agents. It reuses the original MCP servers, tools, Azure configuration,
 workspace data, and Task 2 evaluation criteria. All implementation additions are
-under `tasks/task_3_agentic_system_implementation/`.
+under `src/autogen_personal_assistant/` and `src/evaluation_agent/`.
 
 This system is a personal assistant that answers questions about the user's local
 workspace and can manage tasks and calendar events, draft emails, and save
@@ -16,22 +16,22 @@ agent retrieves notes and files and saves requested summaries.
 
 ## Setup and Execution
 
-Make sure to use a virtual environment and install the required dependencies listed in [`requirements.txt`](../../requirements.txt).
+Use a virtual environment and install the dependencies from the confidential project setup. Confidential tools, configuration, `workspace/`, and `user_tasks.json` are intentionally omitted from this folder; runtime paths expect them at the repository root in the private environment.
 
 Run with:
 
 ```bash
 # Interactive session; exit or quit ends it.
-python tasks/task_3_agentic_system_implementation/main.py
+python src/autogen_personal_assistant/main.py
 
 # One request in a fresh session.
-python tasks/task_3_agentic_system_implementation/main.py --query "What is Owen Murray's email address?"
+python src/autogen_personal_assistant/main.py --query "What is Owen Murray's email address?"
 
 # One MLflow trace per request, including in interactive mode.
-python tasks/task_3_agentic_system_implementation/main.py --mlflow --verbose
+python src/autogen_personal_assistant/main.py --mlflow --verbose
 
 # Evaluate all 10 unchanged tasks with the Task 2 evaluator.
-python tasks/task_3_agentic_system_implementation/evaluation/evaluate_assistant.py
+python src/evaluation_agent/run_evaluate_assistant.py
 ```
 
 Options:
@@ -41,12 +41,12 @@ Options:
 - `--verbose`: print team messages to stderr.
 - `--timeout`: request timeout in seconds (default: 300).
 - `--mlflow`: save one trace per request.
-- `--trace_dir`, `--mlflow_db`, `--exp_name`, and `--tracking_uri`: configure tracing. Defaults are `tasks/task_3/traces/`, `tasks/task_3/mlflow.db`, and `pa_magentic_one`.
+- `--trace_dir`, `--mlflow_db`, `--exp_name`, and `--tracking_uri`: configure tracing. Defaults are `traces/`, `mlflow.db`, and `pa_magentic_one`.
 
 Inspect local traces with:
 
 ```bash
-mlflow ui --backend-store-uri sqlite:///tasks/task_3/mlflow.db --port 5000
+mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5000
 ```
 ## Main Components
 
@@ -168,17 +168,17 @@ demonstrated task failure.
 Run the evaluator from the repository root:
 
 ```bash
-python tasks/task_3_agentic_system_implementation/evaluation/evaluate_assistant.py
+python src/evaluation_agent/run_evaluate_assistant.py
 ```
 
-Artifacts are saved under `tasks/task_3_agentic_system_implementation/evaluation/`:
+Artifacts are saved under `results/`:
 
 - `user_tasks_results.md` and `.csv`: the original report format.
-- `results.json`: full results, including errors, trace counts, and judge evidence.
+- `run_logs.json`: full results, including errors, trace counts, and judge evidence.
 - `mlflow/task_<id>_*/`: one exported assistant trace for each task.
 - `mlflow.db`: local tracking store for the evaluation.
 
-Reports are written after each case without overwriting Task 2 reports.
+Reports are written after each case to `results/` by default. Use `--output-dir` to preserve existing reports in a separate directory.
 
 ## Comparison with the Original System
 
